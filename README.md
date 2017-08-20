@@ -15,4 +15,5 @@ git clone https://github.com/FXServer-ESX/fxserver-es_camera es_camera
 [INFOS]
 
 Type /spectate [id] to spectate someone
+
 Type /spectate to exit spectator mode
