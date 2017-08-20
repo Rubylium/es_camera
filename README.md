@@ -3,7 +3,7 @@ Spectator camera for FiveM
 
 [REQUIREMENTS]
 
-essentialmode + as_admin => https://forum.fivem.net/t/release-essentialmode-base/3665
+essentialmode + es_admin => https://forum.fivem.net/t/release-essentialmode-base/3665
 
 [INSTALLATION]
 
