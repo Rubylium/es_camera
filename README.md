@@ -9,7 +9,7 @@ essentialmode + as_admin => https://forum.fivem.net/t/release-essentialmode-base
 
 ```
 cd in your resources/[essential] directory
-git clone https://github.com/FXServer-ESX/fxserver-es_camera
+git clone https://github.com/FXServer-ESX/fxserver-es_camera es_camera
 ```
 
 [INFOS]
