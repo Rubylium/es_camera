@@ -48,7 +48,7 @@ TriggerEvent('es:addGroupCommand', 'spectate', "admin", function(source, args, u
 
 end, function(source, args, user)
 	TriggerClientEvent('chatMessage', source, "SYSTEM", {255, 0, 0}, "Insufficienct permissions!")
-end)
+end, {help = 'Spectate', params = {{name = 'id'}}})
 
 AddEventHandler('playerDropped', function()
 	for i=1, #Spectating, 1 do
