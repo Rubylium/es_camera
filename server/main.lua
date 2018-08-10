@@ -6,7 +6,7 @@ AddEventHandler('es_camera:requestSpectating', function()
 end)
 
 TriggerEvent('es:addGroupCommand', 'spectate', "admin", function(source, args, user)
-	
+
 	local target = -1
 
 	if args[2] ~= nil then
