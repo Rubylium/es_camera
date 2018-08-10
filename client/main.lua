@@ -8,25 +8,25 @@ local radius          = -3.5;
 local cam             = nil
 
 function polar3DToWorld3D(entityPosition, radius, polarAngleDeg, azimuthAngleDeg)
+    
+    -- convert degrees to radians
+    
+    local polarAngleRad   = polarAngleDeg   * math.pi / 180.0
+    local azimuthAngleRad = azimuthAngleDeg * math.pi / 180.0
 
-	-- convert degrees to radians
+    local pos = {
+      x = entityPosition.x + radius * (math.sin(azimuthAngleRad) * math.cos(polarAngleRad)),
+      y = entityPosition.y - radius * (math.sin(azimuthAngleRad) * math.sin(polarAngleRad)),
+      z = entityPosition.z - radius * math.cos(azimuthAngleRad)
+    }
 
-	local polarAngleRad   = polarAngleDeg   * math.pi / 180.0
-	local azimuthAngleRad = azimuthAngleDeg * math.pi / 180.0
-
-	local pos = {
-	  x = entityPosition.x + radius * (math.sin(azimuthAngleRad) * math.cos(polarAngleRad)),
-	  y = entityPosition.y - radius * (math.sin(azimuthAngleRad) * math.sin(polarAngleRad)),
-	  z = entityPosition.z - radius * math.cos(azimuthAngleRad)
-	}
-
-	return pos
+    return pos
 end
 
 function spectate(target)
 
   if not InSpectatorMode then
-	LastPosition = GetEntityCoords(GetPlayerPed(-1))
+    LastPosition = GetEntityCoords(GetPlayerPed(-1))
   end
 
   local playerPed = GetPlayerPed(-1)
@@ -35,16 +35,16 @@ function spectate(target)
   SetEntityVisible(playerPed,  false)
 
   Citizen.CreateThread(function()
+    
+    if not DoesCamExist(cam) then
+      cam = CreateCam('DEFAULT_SCRIPTED_CAMERA', true)
+    end
 
-	if not DoesCamExist(cam) then
-	  cam = CreateCam('DEFAULT_SCRIPTED_CAMERA', true)
-	end
+    SetCamActive(cam,  true)
+    RenderScriptCams(true,  false,  0,  true,  true)
 
-	SetCamActive(cam,  true)
-	RenderScriptCams(true,  false,  0,  true,  true)
-
-	InSpectatorMode = true
-	TargetSpectate  = target
+    InSpectatorMode = true
+    TargetSpectate  = target
 
   end)
 
@@ -72,11 +72,11 @@ RegisterNetEvent('es_camera:spectate')
 AddEventHandler('es_camera:spectate', function(target)
 
   if InSpectatorMode and target == -1 then
-	resetNormalCamera()
+    resetNormalCamera()
   end
 
   if target ~= -1 then
-	spectate(target)
+    spectate(target)
   end
 
 end)
@@ -91,56 +91,56 @@ Citizen.CreateThread(function()
 
   while true do
 
-	Wait(0)
+    Wait(0)
 
-	if InSpectatorMode then
+    if InSpectatorMode then
 
-	  local targetPlayerId = GetPlayerFromServerId(TargetSpectate)
-	  local playerPed      = GetPlayerPed(-1)
-	  local targetPed      = GetPlayerPed(targetPlayerId)
-	  local coords         = GetEntityCoords(targetPed)
+      local targetPlayerId = GetPlayerFromServerId(TargetSpectate)
+      local playerPed      = GetPlayerPed(-1)
+      local targetPed      = GetPlayerPed(targetPlayerId)
+      local coords         = GetEntityCoords(targetPed)
 
-	  for i=0, 32, 1 do
-		if i ~= PlayerId() then
-		  local otherPlayerPed = GetPlayerPed(i)
-		  SetEntityNoCollisionEntity(playerPed,  otherPlayerPed,  true)
-		end
-	  end
+      for i=0, 32, 1 do
+        if i ~= PlayerId() then
+          local otherPlayerPed = GetPlayerPed(i)
+          SetEntityNoCollisionEntity(playerPed,  otherPlayerPed,  true)
+        end
+      end
 
-	  if IsControlPressed(2, 241) then
-		radius = radius + 0.5;
-	  end
+      if IsControlPressed(2, 241) then
+        radius = radius + 0.5;
+      end
 
-	  if IsControlPressed(2, 242) then
-		radius = radius - 0.5;
-	  end
+      if IsControlPressed(2, 242) then
+        radius = radius - 0.5;
+      end
 
-	  if radius > -1 then
-		radius = -1
-	  end
+      if radius > -1 then
+        radius = -1
+      end
 
-	  local xMagnitude = GetDisabledControlNormal(0,  1);
-	  local yMagnitude = GetDisabledControlNormal(0,  2);
+      local xMagnitude = GetDisabledControlNormal(0,  1);
+      local yMagnitude = GetDisabledControlNormal(0,  2);
 
-	  polarAngleDeg = polarAngleDeg + xMagnitude * 10;
+      polarAngleDeg = polarAngleDeg + xMagnitude * 10;
 
-	  if polarAngleDeg >= 360 then
-		polarAngleDeg = 0
-	  end
+      if polarAngleDeg >= 360 then
+        polarAngleDeg = 0
+      end
 
-	  azimuthAngleDeg = azimuthAngleDeg + yMagnitude * 10;
+      azimuthAngleDeg = azimuthAngleDeg + yMagnitude * 10;
 
-	  if azimuthAngleDeg >= 360 then
-		azimuthAngleDeg = 0;
-	  end
+      if azimuthAngleDeg >= 360 then
+        azimuthAngleDeg = 0;
+      end
 
-	  local nextCamLocation = polar3DToWorld3D(coords, radius, polarAngleDeg, azimuthAngleDeg)
+      local nextCamLocation = polar3DToWorld3D(coords, radius, polarAngleDeg, azimuthAngleDeg)
 
-	  SetCamCoord(cam,  nextCamLocation.x,  nextCamLocation.y,  nextCamLocation.z)
-	  PointCamAtEntity(cam,  targetPed)
-	  SetEntityCoords(playerPed,  coords.x, coords.y, coords.z + 10)
+      SetCamCoord(cam,  nextCamLocation.x,  nextCamLocation.y,  nextCamLocation.z)
+      PointCamAtEntity(cam,  targetPed)
+      SetEntityCoords(playerPed,  coords.x, coords.y, coords.z + 10)
 
-	end
+    end
 
   end
 end)
